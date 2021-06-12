@@ -14,7 +14,7 @@ class CIFAR10Dataset(Dataset):
     def __init(self, basepath, phase='train', transform=None, download=False):
 
         train_list = ['data_batch_1', 'data_batch_2', 'data_batch_3',
-                                'data_batch_4', 'data_batch_5',]
+                      'data_batch_4', 'data_batch_5',]
         val_list = ["test_batch"]
 
         self.basepath = basepath
