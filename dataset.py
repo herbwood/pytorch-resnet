@@ -6,7 +6,7 @@ from torch.utils import data
 import torchvision 
 from torch.utils.data import Dataset
 
-from utils import unpickle, download_dataset
+from utils import unpickle, download_cifar10
 
 
 class CIFAR10Dataset(Dataset):
@@ -23,7 +23,7 @@ class CIFAR10Dataset(Dataset):
         self.lablels = []
 
         if download:
-            download_dataset()
+            download_cifar10()
 
         if phase == 'train':
             downloaded_list = train_list
