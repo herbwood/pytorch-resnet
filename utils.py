@@ -19,3 +19,7 @@ def download_cifar10(url='https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.g
         tar = tarfile.open(target_path, 'r:gz')
         tar.extractall()
         tar.close()
+
+def write_log(logger, message):
+    if logger:
+        logger.info(message)
