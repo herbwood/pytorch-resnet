@@ -12,10 +12,7 @@ from torch.cuda.amp import GradScaler, autocast
 
 from dataset import CIFAR10Dataset
 from model import ResNet, Bottleneck
-<<<<<<< HEAD
-from utils import write_log
-=======
->>>>>>> 11ba617e442aa7321f277ddb5437a90c3c1a09d3
+from utils import write_log, optimizer_select, scheduler_select
 
 
 def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, scaler, logger, device):
