@@ -12,7 +12,7 @@ from torch.cuda.amp import GradScaler, autocast
 
 from dataset import CIFAR10Dataset
 from model import ResNet, Bottleneck
-from utils import write_log, optimizer_select, scheduler_select, label_smoothing_loss
+from utils import TqdmLoggingHandler, write_log, optimizer_select, scheduler_select, label_smoothing_loss
 
 
 def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, scaler, logger, device):
@@ -23,16 +23,13 @@ def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, scaler, lo
     for i, (data, target) in enumerate(dataloader):
 
         optimizer.zero_grad()
-
         data = data.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
 
         with autocast():
             output = model(data)
             loss = label_smoothing_loss(output, target)
-
             pred = output.max(1, keepdim=True)[1]
-        
         acc = pred.eq(target.view_as(pred)).sum().item() / len(target)
 
         scaler.scale(loss).backward()
@@ -72,9 +69,7 @@ def valid_epoch(args, model, dataloader, device):
             with autocast():
                 output = model(data)
                 loss = F.cross_entropy(output, target)
-
                 pred = output.max(1, keepdim=True)[1]
-            
             acc = pred.eq(target.view_as(pred)).sum().item() / len(target)
 
             val_loss += loss.item()
@@ -120,13 +115,15 @@ def resnet_training(args):
     } 
 
     dataset_dict = {
-        'train' : CIFAR10Dataset(basepath=args.data_path, phase='train', transform=transform_dict['train']),
+        'train' : CIFAR10Dataset(basepath=args.data_path, phase='train', transform=transform_dict['train'], download=args.download),
         'valid' : CIFAR10Dataset(basepath=args.data_path, phase='valid', transform=transform_dict['valid'])
     }
 
     dataloader_dict = {
-        'train' : DataLoader(dataset_dict['train'], drop_last=True, batch_size=args.batch_size, shuffle=True, pin_memory=True, num_workers=args.num_workers),
-        'valid' : DataLoader(dataset_dict['valid'], drop_last=False, batch_size=args.batch_size, shuffle=False, pin_memory=True, num_workers=args.num_workers)
+        'train' : DataLoader(dataset_dict['train'], drop_last=True, batch_size=args.batch_size, 
+                             shuffle=True, pin_memory=True, num_workers=args.num_workers),
+        'valid' : DataLoader(dataset_dict['valid'], drop_last=False, batch_size=args.batch_size, 
+                             shuffle=False, pin_memory=True, num_workers=args.num_workers)
     }
 
     gc.enable()

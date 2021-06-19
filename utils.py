@@ -1,6 +1,9 @@
+import sys
+import tqdm
 import pickle
 import requests
 import tarfile
+import logging 
 
 import math
 from torch.nn.functional import one_hot
@@ -67,6 +70,30 @@ class CosineAnnealingWarmUpRestarts(_LRScheduler):
         self.last_epoch = math.floor(epoch)
         for param_group, lr in zip(self.optimizer.param_groups, self.get_lr()):
             param_group['lr'] = lr
+
+class TqdmLoggingHandler(logging.Handler):
+
+    def __init__(self, level=logging.DEBUG):
+        super().__init__(level)
+        self.stream = sys.stdout
+
+    def flush(self):
+        self.acquire()
+        try:
+            if self.stream and hasattr(self.stream, 'flush'):
+                self.stream.flush()
+        finally:
+            self.release()
+        
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            tqdm.tqdm.write(msg, self.stream)
+            self.flush()
+        except (KeyboardInterrupt, SystemExit, RecursionError):
+            raise
+        except Exception:
+            self.handleError(record)
 
 def unpickle(file):
     with open(file, 'rb') as f:
