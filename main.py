@@ -29,6 +29,8 @@ if __name__  == "__main__":
     
     parser.add_argument('--img_size', default=256, type=int,
                         help='Image resize size; Default is 256')
+    parser.add_argument('--download_cifar10', default=False, type=bool,
+                        help='Whether to download CIFAR-10')
 
     optim_list = ['AdamW', 'Adam', 'SGD', 'Ralamb']
     scheduler_list = ['constant', 'warmup', 'reduce_train', 'reduce_valid', 'lambda']
