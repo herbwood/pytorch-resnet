@@ -11,11 +11,11 @@ from utils import unpickle, download_cifar10
 
 class CIFAR10Dataset(Dataset):
 
-    def __init(self, basepath, phase='train', transform=None, download=False):
+    def __init(self, basepath="cifar-10-batches-py", phase='train', transform=None, download=True):
 
-        train_list = ['data_batch_1', 'data_batch_2', 'data_batch_3',
+        self.train_list = ['data_batch_1', 'data_batch_2', 'data_batch_3',
                       'data_batch_4', 'data_batch_5',]
-        val_list = ["test_batch"]
+        self.val_list = ["test_batch"]
 
         self.basepath = basepath
         self.transform = transform
@@ -26,9 +26,9 @@ class CIFAR10Dataset(Dataset):
             download_cifar10()
 
         if phase == 'train':
-            downloaded_list = train_list
+            downloaded_list = self.train_list
         else:
-            downloaded_list = val_list
+            downloaded_list = self.val_list
 
         for filename in downloaded_list:
             filepath = os.path.join(self.basepath, filename)
@@ -48,3 +48,6 @@ class CIFAR10Dataset(Dataset):
             image = self.transform(image)
         
         return image, label
+
+if __name__ == "__main__":
+    dataset = CIFAR10Dataset()
