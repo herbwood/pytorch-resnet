@@ -62,10 +62,9 @@ def valid_epoch(args, model, dataloader, device):
             data = data.to(device, non_blocking=True)
             target = target.to(device, non_blocking=True)
 
-            with autocast():
-                output = model(data)
-                loss = F.cross_entropy(output, target)
-                pred = output.max(1, keepdim=True)[1]
+            output = model(data)
+            loss = F.cross_entropy(output, target)
+            pred = output.max(1, keepdim=True)[1]
             acc = pred.eq(target.view_as(pred)).sum().item() / len(target)
 
             val_loss += loss.item()
@@ -135,7 +134,6 @@ def resnet_training(args):
 
     optimizer = optimizer_select(model, args)
     scheduler = scheduler_select(optimizer, dataloader_dict, args)
-    scaler = GradScaler()
 
     start_epoch = 0
     if args.resume:
@@ -174,7 +172,6 @@ def resnet_training(args):
                 'model' : model.state_dict(),
                 'optimizer' : optimizer.state_dict(),
                 'scheduler' : scheduler.state_dict(),
-                'scaler' : scaler.state_dict()
             }, os.path.join(args.save_path, 'checkpoint.pth.tar'))
             best_val_acc = val_acc
             best_epoch = epoch
