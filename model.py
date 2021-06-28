@@ -114,7 +114,7 @@ class ResNet(nn.Module):
 
     def _make_layer(self, block, planes, blocks, stride=1, dilate=False):
 
-        norm_layer = self.norm_layer
+        norm_layer = self._norm_layer
         downsample = None
         previous_dilation = self.dilation 
 
