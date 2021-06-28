@@ -14,7 +14,7 @@ from model import ResNet, Bottleneck
 from utils import TqdmLoggingHandler, write_log, optimizer_select, scheduler_select, label_smoothing_loss
 
 
-def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, scaler, logger, device):
+def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, logger, device):
 
     start_time_e = time.time()
     model = model.train()
@@ -97,7 +97,7 @@ def resnet_training(args):
     transform_dict = {
         'train' : transforms.Compose(
             [
-                transforms.Resize((args.img_size, args.im_size)),
+                transforms.Resize((args.img_size, args.img_size)),
                 transforms.ToTensor(),
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
             ]),
@@ -110,7 +110,7 @@ def resnet_training(args):
     } 
 
     dataset_dict = {
-        'train' : CIFAR10Dataset(basepath=args.data_path, phase='train', transform=transform_dict['train'], download=args.download),
+        'train' : CIFAR10Dataset(basepath=args.data_path, phase='train', transform=transform_dict['train'], download=args.download_cifar10),
         'valid' : CIFAR10Dataset(basepath=args.data_path, phase='valid', transform=transform_dict['valid'])
     }
 
@@ -156,7 +156,7 @@ def resnet_training(args):
 
     for epoch in range(start_epoch, args.num_epochs):
 
-        train_epoch(args, epoch, model, dataloader_dict['train'], optimizer, scheduler, scaler, logger, device)
+        train_epoch(args, epoch, model, dataloader_dict['train'], optimizer, scheduler, logger, device)
         val_loss, val_acc = valid_epoch(args, model, dataloader_dict['valid'], device)
 
         val_loss /= len(dataloader_dict['valid'])
