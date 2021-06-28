@@ -62,3 +62,5 @@ if __name__  == "__main__":
     parser.add_argument('--print_freq', default=100, type=int, 
                         help='Print training process frequency; Default is 100')
     args = parser.parse_args()
+
+    main(args)
