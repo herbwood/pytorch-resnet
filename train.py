@@ -8,7 +8,6 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from torch.nn.utils import clip_grad_norm_
 import torchvision.transforms as transforms 
-from torch.cuda.amp import GradScaler, autocast
 
 from dataset import CIFAR10Dataset
 from model import ResNet, Bottleneck
@@ -26,17 +25,14 @@ def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, scaler, lo
         data = data.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
 
-        with autocast():
-            output = model(data)
-            loss = label_smoothing_loss(output, target)
-            pred = output.max(1, keepdim=True)[1]
+        output = model(data)
+        loss = label_smoothing_loss(output, target)
+        pred = output.max(1, keepdim=True)[1]
         acc = pred.eq(target.view_as(pred)).sum().item() / len(target)
 
-        scaler.scale(loss).backward()
-        scaler.unscale_(optimizer)
+        loss.backward()
         clip_grad_norm_(model.parameters(), args.clip_grad_norm)
-        scaler.step(optimizer)
-        scaler.update()
+        optimizer.step()
 
         if args.scheduler in ['constant', 'warmup']:
             scheduler.step()
