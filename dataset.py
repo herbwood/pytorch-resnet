@@ -11,7 +11,7 @@ from utils import unpickle, download_cifar10
 
 class CIFAR10Dataset(Dataset):
 
-    def __init(self, basepath="cifar-10-batches-py", phase='train', transform=None, download=True):
+    def __init__(self, basepath="cifar-10-batches-py", phase='train', transform=None, download=False):
 
         self.train_list = ['data_batch_1', 'data_batch_2', 'data_batch_3',
                       'data_batch_4', 'data_batch_5',]
@@ -20,7 +20,7 @@ class CIFAR10Dataset(Dataset):
         self.basepath = basepath
         self.transform = transform
         self.data = []
-        self.lablels = []
+        self.labels = []
 
         if download:
             download_cifar10()
