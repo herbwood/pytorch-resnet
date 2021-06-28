@@ -33,7 +33,7 @@ if __name__  == "__main__":
                         help='Whether to download CIFAR-10')
 
     optim_list = ['AdamW', 'Adam', 'SGD', 'Ralamb']
-    scheduler_list = ['constant', 'warmup', 'reduce_train', 'reduce_valid', 'lambda']
+    scheduler_list = ['constant', 'cosine', 'cosine_warmup', 'reduce_train', 'lambda']
     parser.add_argument('--optimizer', default='AdamW', type=str, choices=optim_list,
                         help="Choose optimizer setting in 'AdamW', 'Adam', 'SGD'; Default is AdamW")
     parser.add_argument('--scheduler', default='constant', type=str, choices=scheduler_list,
