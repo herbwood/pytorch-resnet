@@ -175,7 +175,7 @@ def scheduler_select(optimizer, dataloader_dict, args):
     elif args.scheduler == 'cosine':
         scheduler = CosineAnnealingLR(optimizer, T_max=args.num_epochs // 3)
     elif args.scheduler == 'cosine_warmup':
-        scheduler = CosineAnnealingWarmUpRestarts(optimizer, T_max=args.num_epochs // 3)
+        scheduler = CosineAnnealingWarmUpRestarts(optimizer, T_0=args.num_epochs // 3)
     elif args.scheduler == 'reduce_train':
         scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1, factor=0.5)
     elif args.scheduler == 'lambda':
