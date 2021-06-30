@@ -26,7 +26,7 @@ def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, logger, de
         target = target.to(device, non_blocking=True)
 
         output = model(data)
-        loss = label_smoothing_loss(output, target)
+        loss = label_smoothing_loss(output, target, device=device)
         pred = output.max(1, keepdim=True)[1]
         acc = pred.eq(target.view_as(pred)).sum().item() / len(target)
 
@@ -40,12 +40,7 @@ def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, logger, de
             scheduler.step(loss)
 
         if i == 0 or freq == args.print_freq or i == len(dataloader):
-            batch_log = f"[Epoch:{epoch+1}] \
-                          [{i}/{len(dataloader)}] \
-                          | train_loss:{loss.item():2.3f} \
-                          | train_acc:{acc:02.2f} \
-                          | learning_rate:{optimizer.param_groups[0]['lr']:3.6f} \
-                          | spend_time:{((time.time()-start_time_e)/60):3.2f}min"
+            batch_log = f"[Epoch:{epoch+1}] [{i}/{len(dataloader)}] | train_loss:{loss.item():2.3f} | train_acc:{acc:02.2f} | learning_rate:{optimizer.param_groups[0]['lr']:3.6f} | spend_time:{((time.time()-start_time_e)/60):3.2f}min"
 
             write_log(logger, batch_log)
             freq = 0
@@ -129,7 +124,7 @@ def resnet_training(args):
     #===================================#
 
     write_log(logger, 'Instantiating models...')
-    model = ResNet(block=Bottleneck, layers=[3,4,6,3])
+    model = ResNet(block=Bottleneck, layers=[3,4,6,3], num_classes=10)
     model = model.to(device)
 
     optimizer = optimizer_select(model, args)
