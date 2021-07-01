@@ -7,7 +7,7 @@ def main(args):
     
     total_start_time = time.time()
 
-    if args.training:
+    if args.training or args.resume:
         resnet_training(args)
 
     
