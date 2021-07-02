@@ -170,11 +170,12 @@ def rand_bbox(size, lam):
 
     return bbx1, bby1, bbx2, bby2
 
-def cutmix(input, target, model, criterion, args):
+def cutmix_loss(input, target, model, device, args):
     r = np.random.rand(1)
-    if args.beta > 0 and r < args.cumtix_prob:
+    if args.beta > 0 and r < args.cutmix_prob:
         lam = np.random.beta(args.beta, args.beta)
         rand_index = torch.randperm(input.size()[0]).cuda()
+
         target_a = target
         target_b = target[rand_index]
         bbx1, bby1, bbx2, bby2 = rand_bbox(input.size(), lam)
@@ -182,10 +183,15 @@ def cutmix(input, target, model, criterion, args):
 
         lam = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (input.size()[-1] * input.size()[-2]))
         output = model(input)
-        loss = criterion(output, target_a) * lam + criterion(output, target_b) * (1. - lam)
+        loss = label_smoothing_loss(output, target_a, device=device) \
+               * lam + label_smoothing_loss(output, target_b, device=device) * (1. - lam)
 
-        return loss
-    return 
+        return output, loss
+    
+    output = model(input)
+    loss = label_smoothing_loss(output, target, device=device)
+    
+    return output, loss
 
 def optimizer_select(model, args):
 
