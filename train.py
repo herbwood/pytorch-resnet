@@ -13,7 +13,7 @@ from torch.cuda.amp import GradScaler, autocast
 
 from dataset import CIFAR10Dataset
 from model import ResNet, Bottleneck
-from utils import TqdmLoggingHandler, write_log, optimizer_select, scheduler_select, label_smoothing_loss
+from utils import TqdmLoggingHandler, write_log, optimizer_select, scheduler_select, label_smoothing_loss, cutmix_loss
 
 
 def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, scaler, logger, device):
@@ -28,6 +28,8 @@ def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, scaler, lo
         target = target.to(device, non_blocking=True)
 
         with autocast():
+            if args.cutmix:
+                output, loss = cutmix_loss(data, target, model, device, args)
             output = model(data)
             loss = label_smoothing_loss(output, target, device=device)
             pred = output.max(1, keepdim=True)[1]
