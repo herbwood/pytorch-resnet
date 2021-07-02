@@ -56,6 +56,12 @@ if __name__  == "__main__":
     parser.add_argument('--clip_grad_norm', default=5, type=int, 
                         help='Graddient clipping norm; Default is 5')
 
+    parser.add_argument('--cutmix', action='store_true', default=True) 
+    parser.add_argument('--cutmix_prob', default=0.5, type=float, 
+                    help='cutmix probability')
+    parser.add_argument('--beta', default=1.0, type=float,
+                    help='hyperparameter beta')
+
     parser.add_argument('--test_batch_size', default=32, type=int, 
                         help='Test batch size; Default is 32')
 
