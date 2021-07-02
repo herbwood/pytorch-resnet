@@ -18,11 +18,11 @@ if __name__  == "__main__":
 
     parser = argparse.ArgumentParser(description='Parsing Method')
 
-    parser.add_argument('--training', action='store_true')
+    parser.add_argument('--training', action='store_true', default=True)
     parser.add_argument('--testing', action='store_true')
     parser.add_argument('--resume', action='store_true')
 
-    parser.add_argument('--data_path', default='./data', type=str,
+    parser.add_argument('--data_path', default='cifar-10-batches-py', type=str,
                         help='Original data path')
     parser.add_argument('--save_path', default='./save', type=str,
                         help='Model checkpoint file path')
