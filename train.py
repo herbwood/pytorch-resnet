@@ -26,6 +26,8 @@ def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, scaler, lo
         optimizer.zero_grad()
         data = data.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
+        
+        wandb.log({"examples" : [wandb.Image(data[0])]})
 
         with autocast():
             if args.cutmix:
