@@ -53,4 +53,4 @@ class CIFAR10Dataset(Dataset):
         return image, label
 
 if __name__ == "__main__":
-    dataset = CIFAR10Dataset()
+    dataset = CIFAR10Dataset(download=True)
