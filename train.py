@@ -27,11 +27,10 @@ def train_epoch(args, epoch, model, dataloader, optimizer, scheduler, scaler, lo
         data = data.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
         
-        wandb.log({"examples" : [wandb.Image(data[0])]})
-
         with autocast():
             if args.cutmix:
                 output, loss = cutmix_loss(data, target, model, device, args)
+                wandb.log({"examples" : [wandb.Image(data[0])]})
             output = model(data)
             loss = label_smoothing_loss(output, target, device=device)
             pred = output.max(1, keepdim=True)[1]
