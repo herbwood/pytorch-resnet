@@ -1,5 +1,6 @@
 import sys
 import tqdm
+import time
 import pickle
 import requests
 import tarfile
@@ -116,6 +117,29 @@ class Averager:
     def reset(self):
         self.current_total = 0.0
         self.iterations = 0.0
+
+class Timer:
+    def __init__(self):
+        self.start_time = 0.0
+        self.end_time = 0.0
+
+        self.tik()
+    
+    def tik(self):
+        self.start_time = time.time()
+    
+    def tok(self, ms = False, clear=False):
+        self.end_time = time.time()
+        
+        if ms:
+            duration = int((self.end_time - self.start_time) * 1000)
+        else:
+            duration = int(self.end_time - self.start_time)
+
+        if clear:
+            self.tik()
+
+        return duration
 
 def unpickle(file):
     with open(file, 'rb') as f:
